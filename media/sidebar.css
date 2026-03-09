@@ -168,53 +168,28 @@ input:focus {
   background: rgba(109, 93, 251, 0.14);
 }
 
-.eye-icon {
-  position: relative;
-  width: 16px;
-  height: 16px;
-  display: inline-block;
+.eye-asset {
+  width: 18px;
+  height: 18px;
+  display: block;
+  transition: opacity 160ms ease, transform 160ms ease;
 }
 
-.eye-icon::before {
-  content: "";
-  position: absolute;
-  inset: 3px 1px;
-  border: 1.8px solid currentColor;
-  border-radius: 999px / 80%;
-}
-
-.eye-icon::after {
-  content: "";
-  position: absolute;
-  left: 5px;
-  top: 5px;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: currentColor;
-}
-
-.icon-button.is-visible .eye-icon::before,
-.icon-button.is-visible .eye-icon::after {
-  opacity: 0.82;
-}
-
-.icon-button.is-visible .eye-icon {
-  transform: rotate(-10deg);
-}
-
-.icon-button.is-visible .eye-icon span {
+.eye-open {
   display: none;
 }
 
-.icon-button.is-visible::after {
-  content: "";
-  position: absolute;
-  width: 20px;
-  height: 2px;
-  background: currentColor;
-  border-radius: 999px;
-  transform: rotate(-36deg);
+.eye-off {
+  display: block;
+}
+
+.icon-button.is-visible .eye-open {
+  display: block;
+  transform: scale(1.02);
+}
+
+.icon-button.is-visible .eye-off {
+  display: none;
 }
 
 .actions {

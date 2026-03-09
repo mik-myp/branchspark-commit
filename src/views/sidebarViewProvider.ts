@@ -116,6 +116,12 @@ export class SidebarViewProvider implements vscode.WebviewViewProvider {
     const styleUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, "media", "sidebar.css")
     );
+    const eyeOpenUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.extensionUri, "media", "eye-open.svg")
+    );
+    const eyeOffUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.extensionUri, "media", "eye-off.svg")
+    );
     const nonce = createNonce();
 
     return `<!DOCTYPE html>
@@ -124,7 +130,7 @@ export class SidebarViewProvider implements vscode.WebviewViewProvider {
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';"
+      content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}'; img-src ${webview.cspSource};"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="${styleUri}" />
@@ -160,7 +166,18 @@ export class SidebarViewProvider implements vscode.WebviewViewProvider {
                 aria-label="显示 API Key"
                 title="显示 API Key"
               >
-                <span class="eye-icon" aria-hidden="true"></span>
+                <img
+                  class="eye-asset eye-open"
+                  src="${eyeOpenUri}"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <img
+                  class="eye-asset eye-off"
+                  src="${eyeOffUri}"
+                  alt=""
+                  aria-hidden="true"
+                />
               </button>
             </div>
           </label>
