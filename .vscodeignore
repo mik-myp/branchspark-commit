@@ -1,0 +1,13 @@
+.vscode/**
+.git/**
+.github/**
+src/**
+tests/**
+node_modules/**
+*.log
+.eslintcache
+eslint.config.js
+tsconfig.json
+tsconfig.test.json
+pnpm-lock.yaml
+.gitignore

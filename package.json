@@ -5,7 +5,7 @@
     "version": "0.0.1",
     "license": "UNLICENSED",
     "engines": {
-        "vscode": "^1.85.0"
+        "vscode": "^1.109.0"
     },
     "categories": [
         "Source Control",
@@ -121,5 +121,10 @@
         "typescript-eslint": "^8.56.1",
         "vitest": "^4.0.18"
     },
-    "icon": "media/extension-icon.png"
+    "icon": "media/extension-icon.png",
+    "publisher": "mik-myp",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mik-myp/branchspark-commit.git"
+    }
 }
