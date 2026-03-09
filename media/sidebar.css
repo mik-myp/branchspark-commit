@@ -1,0 +1,292 @@
+:root {
+  --brand-purple: #6d5dfb;
+  --brand-blue: #3b82f6;
+  --brand-teal: #14b8a6;
+  --brand-gold: #f59e0b;
+  --brand-shadow: rgba(14, 22, 48, 0.18);
+  --brand-outline: rgba(109, 93, 251, 0.24);
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  color: var(--vscode-foreground);
+  background:
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.12), transparent 34%),
+    radial-gradient(circle at top left, rgba(109, 93, 251, 0.16), transparent 36%),
+    var(--vscode-sideBar-background);
+  font-family: var(--vscode-font-family);
+}
+
+.container {
+  padding: 14px;
+  display: grid;
+  gap: 14px;
+}
+
+.config-only {
+  align-content: start;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--brand-outline);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0)),
+    var(--vscode-editorWidget-background);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 12px 24px var(--brand-shadow);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--brand-purple), var(--brand-blue), var(--brand-teal));
+}
+
+.hero-card {
+  padding: 16px;
+  background:
+    radial-gradient(circle at top right, rgba(20, 184, 166, 0.18), transparent 30%),
+    linear-gradient(135deg, rgba(109, 93, 251, 0.18), rgba(59, 130, 246, 0.16) 55%, rgba(20, 184, 166, 0.14)),
+    var(--vscode-editorWidget-background);
+}
+
+.compact-hero {
+  margin-bottom: 2px;
+}
+
+.hero-badge {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--brand-gold), #fde68a);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.16);
+}
+
+.hero-title {
+  margin: 14px 0 8px;
+  font-size: 22px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.hero-description {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.86);
+  line-height: 1.6;
+}
+
+.stack {
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field span {
+  font-weight: 700;
+}
+
+input,
+button {
+  font: inherit;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(109, 93, 251, 0.22);
+  color: var(--vscode-input-foreground);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    var(--vscode-input-background);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.72);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
+}
+
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  padding-right: 48px;
+}
+
+.icon-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(109, 93, 251, 0.18);
+  background: rgba(109, 93, 251, 0.08);
+  color: var(--vscode-foreground);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button:hover:not(:disabled) {
+  transform: translateY(-50%);
+  background: rgba(109, 93, 251, 0.14);
+}
+
+.eye-icon {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+.eye-icon::before {
+  content: "";
+  position: absolute;
+  inset: 3px 1px;
+  border: 1.8px solid currentColor;
+  border-radius: 999px / 80%;
+}
+
+.eye-icon::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.icon-button.is-visible .eye-icon::before,
+.icon-button.is-visible .eye-icon::after {
+  opacity: 0.82;
+}
+
+.icon-button.is-visible .eye-icon {
+  transform: rotate(-10deg);
+}
+
+.icon-button.is-visible .eye-icon span {
+  display: none;
+}
+
+.icon-button.is-visible::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 999px;
+  transform: rotate(-36deg);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.vertical-actions {
+  display: grid;
+}
+
+button {
+  position: relative;
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+button.primary {
+  color: #ffffff;
+  border-color: rgba(109, 93, 251, 0.16);
+  background: linear-gradient(135deg, var(--brand-purple), var(--brand-blue) 58%, var(--brand-teal));
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.26);
+}
+
+button.primary:hover:not(:disabled) {
+  box-shadow: 0 12px 22px rgba(59, 130, 246, 0.3);
+}
+
+button.secondary {
+  color: var(--vscode-button-secondaryForeground);
+  border-color: rgba(109, 93, 251, 0.22);
+  background:
+    linear-gradient(180deg, rgba(109, 93, 251, 0.08), rgba(59, 130, 246, 0.04)),
+    var(--vscode-button-secondaryBackground);
+}
+
+button.secondary:hover:not(:disabled) {
+  background:
+    linear-gradient(180deg, rgba(109, 93, 251, 0.12), rgba(59, 130, 246, 0.08)),
+    var(--vscode-button-secondaryHoverBackground);
+}
+
+button.action-strong {
+  width: 100%;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  transform: none;
+  box-shadow: none;
+}
+
+.meta {
+  color: var(--vscode-descriptionForeground);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.meta-pill {
+  display: inline-flex;
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(109, 93, 251, 0.18);
+  background: rgba(109, 93, 251, 0.08);
+}

@@ -1,0 +1,125 @@
+{
+    "name": "git-commit-by-openai",
+    "displayName": "BranchSpark Commit",
+    "description": "在 VS Code 中配置 AI，并一键生成 Git 提交信息写入提交框。",
+    "version": "0.0.1",
+    "license": "UNLICENSED",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Source Control",
+        "Other"
+    ],
+    "keywords": [
+        "branchspark",
+        "git",
+        "commit",
+        "ai",
+        "openai",
+        "vscode-extension"
+    ],
+    "activationEvents": [
+        "onView:branchSparkCommit.sidebar",
+        "onCommand:branchSparkCommit.openSidebar",
+        "onCommand:branchSparkCommit.generateCommitMessage",
+        "onCommand:branchSparkCommit.saveConfig",
+        "onCommand:branchSparkCommit.testConnection"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "branchSparkCommit",
+                    "title": "BranchSpark",
+                    "icon": "media/activitybar.svg"
+                }
+            ]
+        },
+        "views": {
+            "branchSparkCommit": [
+                {
+                    "type": "webview",
+                    "id": "branchSparkCommit.sidebar",
+                    "name": "BranchSpark Commit"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "branchSparkCommit.openSidebar",
+                "title": "打开 BranchSpark 侧边栏",
+                "category": "BranchSpark Commit"
+            },
+            {
+                "command": "branchSparkCommit.generateCommitMessage",
+                "title": "生成 AI 提交信息",
+                "category": "BranchSpark Commit",
+                "icon": {
+                    "light": "media/scm-generate-light.svg",
+                    "dark": "media/scm-generate-dark.svg"
+                }
+            },
+            {
+                "command": "branchSparkCommit.saveConfig",
+                "title": "保存 BranchSpark 配置",
+                "category": "BranchSpark Commit"
+            },
+            {
+                "command": "branchSparkCommit.testConnection",
+                "title": "测试 BranchSpark 连通性",
+                "category": "BranchSpark Commit"
+            }
+        ],
+        "menus": {
+            "scm/title": [
+                {
+                    "command": "branchSparkCommit.generateCommitMessage",
+                    "when": "scmProvider == git",
+                    "group": "navigation@-100"
+                }
+            ]
+        },
+        "configuration": {
+            "title": "BranchSpark Commit",
+            "properties": {
+                "gitCommitByOpenAI.baseUrl": {
+                    "type": "string",
+                    "default": "https://api.openai.com/v1",
+                    "description": "OpenAI 兼容 API 的 Base URL。"
+                },
+                "gitCommitByOpenAI.model": {
+                    "type": "string",
+                    "default": "",
+                    "description": "用于生成提交信息的模型名称。"
+                },
+                "gitCommitByOpenAI.timeoutMs": {
+                    "type": "number",
+                    "default": 30000,
+                    "minimum": 1000,
+                    "description": "AI 请求超时时间，单位毫秒。"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "dev": "tsc -watch -p tsconfig.json",
+        "lint": "eslint .",
+        "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json --noEmit",
+        "test": "vitest run",
+        "vscode:prepublish": "pnpm run build"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@types/node": "^25.3.5",
+        "@types/vscode": "^1.109.0",
+        "eslint": "^10.0.3",
+        "globals": "^17.4.0",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.56.1",
+        "vitest": "^4.0.18"
+    },
+    "icon": "media/extension-icon.png"
+}
