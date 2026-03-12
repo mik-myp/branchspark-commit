@@ -2,7 +2,7 @@
     "name": "git-commit-by-openai",
     "displayName": "BranchSpark Commit",
     "description": "在 VS Code 中配置 AI，并一键生成 Git 提交信息写入提交框。",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "license": "UNLICENSED",
     "engines": {
         "vscode": "^1.109.0"
