@@ -30,6 +30,14 @@ interface ChatCompletionResponse {
   }>;
 }
 
+interface ChatCompletionStreamResponse {
+  choices?: Array<{
+    delta?: {
+      content?: string | null;
+    };
+  }>;
+}
+
 export class AiRequestError extends Error {
   constructor(message: string) {
     super(message);
@@ -341,10 +349,62 @@ function extractTextContent(content: ChatCompletionResponse["choices"]): string 
   return "";
 }
 
-async function createChatCompletion(
+function extractStreamTextContent(rawText: string): string {
+  const chunks: string[] = [];
+
+  for (const rawLine of rawText.split(/\r?\n/u)) {
+    const line = rawLine.trim();
+    if (!line.startsWith("data:")) {
+      continue;
+    }
+
+    const payload = line.slice("data:".length).trim();
+    if (!payload || payload === "[DONE]") {
+      continue;
+    }
+
+    try {
+      const parsed = JSON.parse(payload) as ChatCompletionStreamResponse;
+      const content = parsed.choices?.[0]?.delta?.content;
+      if (content) {
+        chunks.push(content);
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return chunks.join("");
+}
+
+function extractChatCompletionText(
+  rawText: string,
+  contentType: string | null
+): string {
+  const normalizedContentType = contentType?.toLowerCase() || "";
+  if (normalizedContentType.includes("text/event-stream")) {
+    return extractStreamTextContent(rawText);
+  }
+
+  const parsed = JSON.parse(rawText) as ChatCompletionResponse;
+  return extractTextContent(parsed.choices);
+}
+
+function shouldRetryWithStream(
+  responseText: string,
+  body: Record<string, unknown>
+): boolean {
+  if (body.stream === true) {
+    return false;
+  }
+
+  return responseText.toLowerCase().includes("stream must be set to true");
+}
+
+async function sendChatCompletionRequest(
   config: AiConfig,
   body: Record<string, unknown>
-): Promise<string> {
+): Promise<{ response: Response; text: string }> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), config.timeoutMs);
 
@@ -361,13 +421,36 @@ async function createChatCompletion(
     });
 
     const text = await response.text();
-    if (!response.ok) {
-      const message = text.trim() || `HTTP ${String(response.status)}`;
+    return { response, text };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function createChatCompletion(
+  config: AiConfig,
+  body: Record<string, unknown>
+): Promise<string> {
+  try {
+    let result = await sendChatCompletionRequest(config, body);
+
+    if (!result.response.ok && shouldRetryWithStream(result.text, body)) {
+      result = await sendChatCompletionRequest(config, {
+        ...body,
+        stream: true
+      });
+    }
+
+    if (!result.response.ok) {
+      const message =
+        result.text.trim() || `HTTP ${String(result.response.status)}`;
       throw new AiRequestError(`AI 请求失败：${message}`);
     }
 
-    const parsed = JSON.parse(text) as ChatCompletionResponse;
-    return extractTextContent(parsed.choices);
+    return extractChatCompletionText(
+      result.text,
+      result.response.headers.get("content-type")
+    );
   } catch (error) {
     if (error instanceof AiRequestError) {
       throw error;
@@ -379,8 +462,6 @@ async function createChatCompletion(
 
     const message = error instanceof Error ? error.message : String(error);
     throw new AiRequestError(`AI 请求失败：${message}`);
-  } finally {
-    clearTimeout(timer);
   }
 }
 

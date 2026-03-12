@@ -17,10 +17,35 @@ function createFetchResponse(content: string): Response {
   return {
     ok: true,
     status: 200,
+    headers: {
+      get: () => "application/json"
+    },
     text: async () =>
       JSON.stringify({
         choices: [{ message: { content } }]
       })
+  } as Response;
+}
+
+function createStreamFetchResponse(events: string): Response {
+  return {
+    ok: true,
+    status: 200,
+    headers: {
+      get: () => "text/event-stream"
+    },
+    text: async () => events
+  } as Response;
+}
+
+function createErrorResponse(message: string, status = 400): Response {
+  return {
+    ok: false,
+    status,
+    headers: {
+      get: () => "application/json"
+    },
+    text: async () => message
   } as Response;
 }
 
@@ -101,5 +126,60 @@ describe("AiCommitService", () => {
     });
 
     expect(message).toBe("docs(docs): 更新文档说明与使用示例");
+  });
+
+  it("retries with streaming when gateway requires stream mode", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(
+        createErrorResponse('{"detail":"Stream must be set to true"}')
+      )
+      .mockResolvedValueOnce(
+        createStreamFetchResponse(
+          [
+            'data: {"choices":[{"delta":{"content":"ok"}}]}',
+            "",
+            "data: [DONE]"
+          ].join("\n")
+        )
+      );
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const service = new AiCommitService();
+    const result = await service.testConnection(config);
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls[1]?.[1]?.body).toContain('"stream":true');
+    expect(result).toBe("ok");
+  });
+
+  it("parses streamed JSON completion content for commit generation", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(
+        createErrorResponse('{"detail":"Stream must be set to true"}')
+      )
+      .mockResolvedValueOnce(
+        createStreamFetchResponse(
+          [
+            'data: {"choices":[{"delta":{"content":"{\\"type\\":\\"feat\\","}}]}',
+            'data: {"choices":[{"delta":{"content":"\\"scope\\":\\"git\\","}}]}',
+            'data: {"choices":[{"delta":{"content":"\\"subject\\":\\"支持流式网关生成提交信息\\"}"}}]}',
+            "",
+            "data: [DONE]"
+          ].join("\n")
+        )
+      );
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const service = new AiCommitService();
+    const message = await service.generateCommitMessage({
+      config,
+      diff: "diff --git a/src/extension.ts b/src/extension.ts",
+      changedFiles: ["src/extension.ts"]
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(message).toBe("feat(git): 支持流式网关生成提交信息");
   });
 });
